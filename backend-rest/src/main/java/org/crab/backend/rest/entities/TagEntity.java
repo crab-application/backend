@@ -16,19 +16,40 @@
  */
 package org.crab.backend.rest.entities;
 
+import org.neo4j.ogm.annotation.Id;
+import org.neo4j.ogm.annotation.NodeEntity;
+import org.neo4j.ogm.annotation.Property;
+
 import java.io.Serializable;
 import java.util.Objects;
-
-public class TagEntity implements Serializable {
+@NodeEntity
+public class TagEntity implements Serializable , ClonableEntity<TagEntity>{
 
 
     // =========================================================================
     // ATTRIBUTES
     // =========================================================================
     private static final long serialVersionUID = -1790998381283249944L;
-
+    @Id
     private String name;
+
+    @Property
     private String title;
+
+    // =========================================================================
+    // CONSTRUCTORS
+    // =========================================================================
+    public TagEntity() {
+    }
+    public TagEntity(String name, String title) {
+        this.name = name;
+        this.title = title;
+    }
+
+    @Override
+    public TagEntity clone() {
+        return new TagEntity(name,title);
+    }
 
     // =========================================================================
     // OVERRIDES
@@ -78,4 +99,6 @@ public class TagEntity implements Serializable {
     public void setTitle(String title) {
         this.title = title;
     }
+
+
 }

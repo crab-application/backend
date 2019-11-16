@@ -16,20 +16,45 @@
  */
 package org.crab.backend.rest.entities;
 
+import org.neo4j.ogm.annotation.GeneratedValue;
+import org.neo4j.ogm.annotation.Id;
+import org.neo4j.ogm.annotation.NodeEntity;
+import org.neo4j.ogm.annotation.Relationship;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
-
-public class FiltersEntity implements Serializable {
+@NodeEntity
+public class FiltersEntity implements Serializable, ClonableEntity<FiltersEntity> {
 
 
     // =========================================================================
     // ATTRIBUTES
     // =========================================================================
-    private static final long  serialVersionUID = -8414460933382806983L;
+    private static final long   serialVersionUID = -8414460933382806983L;
+    @Id
+    @GeneratedValue
+    private              String uid;
 
-    private String             uid;
+    @Relationship(type = "HAS_FILTERS")
     private List<FilterEntity> filters;
+
+    // =========================================================================
+    // CONSTRUCTORS
+    // =========================================================================
+    public FiltersEntity() {
+    }
+
+    public FiltersEntity(String uid, List<FilterEntity> filters) {
+        this.uid = uid;
+        this.filters = filters;
+    }
+
+    @Override
+    public FiltersEntity clone() {
+        return new FiltersEntity(uid, cloneEntities(filters));
+    }
+
     // =========================================================================
     // OVERRIDES
     // =========================================================================
@@ -76,4 +101,6 @@ public class FiltersEntity implements Serializable {
     public void setFilters(List<FilterEntity> filters) {
         this.filters = filters;
     }
+
+
 }

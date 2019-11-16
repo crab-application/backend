@@ -16,25 +16,89 @@
  */
 package org.crab.backend.rest.entities;
 
+import org.neo4j.ogm.annotation.*;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
-public class DocumentEntity implements Serializable {
+@NodeEntity
+public class DocumentEntity implements Serializable, ClonableEntity<DocumentEntity> {
     // =========================================================================
     // ATTRIBUTES
     // =========================================================================
     private static final long                 serialVersionUID = 5088357164086232014L;
-    private              String               uid;
-    private              String               type;
-    private              String               title;
-    private              String               description;
+
+    @Id
+    @GeneratedValue
+    private              Long   id;
+    @Property
+    private              String type;
+    @Property
+    private              String title;
+    @Property
+    private              String description;
+
+    @Relationship(type = "HAS_TAGS")
     private              List<TagEntity>      tags;
+
+    @Relationship(type = "HAS_CHILDREN")
     private              List<DocumentEntity> children;
+
+    @Relationship(type = "HAS_VERSIONS")
     private              List<VersionEntity>  versions;
+
+    @Property
     private              String               image;
+
+    @Relationship(type = "HAS_AUTHORS")
     private              List<AuthorEntity>   authors;
+
+    @Relationship(type = "HAS_METADATA")
     private              List<MetadataEntity> metadata;
+
+    // =========================================================================
+    // CONSTRUCTORS
+    // =========================================================================
+    public DocumentEntity(){
+    }
+
+    public DocumentEntity(final Long id,
+                          final String type,
+                          final String title,
+                          final String description,
+                          final List<TagEntity> tags,
+                          final List<DocumentEntity> children,
+                          final List<VersionEntity> versions,
+                          final String image,
+                          final List<AuthorEntity> authors,
+                          final List<MetadataEntity> metadata) {
+        this.id = id;
+        this.type = type;
+        this.title = title;
+        this.description = description;
+        this.tags = tags;
+        this.children = children;
+        this.versions = versions;
+        this.image = image;
+        this.authors = authors;
+        this.metadata = metadata;
+    }
+
+    @Override
+    public DocumentEntity clone() {
+
+        return new DocumentEntity(id,
+                type,
+                title,
+                description,
+                cloneEntities(tags),
+                cloneEntities(children),
+                cloneEntities(versions),
+                image,
+                cloneEntities(authors),
+                cloneEntities(metadata));
+    }
 
     // =========================================================================
     // OVERRIDES
@@ -44,21 +108,21 @@ public class DocumentEntity implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final DocumentEntity that = (DocumentEntity) o;
-        return Objects.equals(uid, that.uid) &&
+        return Objects.equals(id, that.id) &&
                 Objects.equals(type, that.type) &&
                 Objects.equals(title, that.title);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(uid, type, title);
+        return Objects.hash(id, type, title);
     }
 
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("DocumentEntity{");
         sb.append("uid='")
-          .append(uid)
+          .append(id)
           .append('\'');
         sb.append(", type='")
           .append(type)
@@ -86,18 +150,19 @@ public class DocumentEntity implements Serializable {
         return sb.toString();
     }
 
-    protected void childrenToString(final StringBuilder builder){
+    protected void childrenToString(final StringBuilder builder) {
 
     }
+
     // =========================================================================
     // GETTERS & SETTERS
     // =========================================================================
-    public String getUid() {
-        return uid;
+    public Long getId() {
+        return id;
     }
 
-    public void setUid(String uid) {
-        this.uid = uid;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getType() {
@@ -171,4 +236,6 @@ public class DocumentEntity implements Serializable {
     public void setMetadata(List<MetadataEntity> metadata) {
         this.metadata = metadata;
     }
+
+
 }

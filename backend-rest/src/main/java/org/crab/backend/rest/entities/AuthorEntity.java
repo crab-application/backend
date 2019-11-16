@@ -16,20 +16,45 @@
  */
 package org.crab.backend.rest.entities;
 
+import org.neo4j.ogm.annotation.GeneratedValue;
+import org.neo4j.ogm.annotation.Id;
+import org.neo4j.ogm.annotation.NodeEntity;
+import org.neo4j.ogm.annotation.Property;
+
 import java.io.Serializable;
 import java.util.Objects;
-
-public class AuthorEntity implements Serializable {
+@NodeEntity
+public class AuthorEntity implements Serializable, ClonableEntity<AuthorEntity> {
 
 
     // =========================================================================
     // ATTRIBUTES
     // =========================================================================
     private static final long serialVersionUID = -7115295706447881070L;
+    @Id
+    @GeneratedValue
+    private Long id;
 
-    private String uid;
+    @Property
     private String name;
 
+
+    // =========================================================================
+    // CONSTRUCTORS
+    // =========================================================================
+
+    public AuthorEntity() {
+    }
+
+    public AuthorEntity(final Long id, final String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    @Override
+    public AuthorEntity clone() {
+        return new AuthorEntity(id, name);
+    }
     // =========================================================================
     // OVERRIDES
     // =========================================================================
@@ -39,20 +64,20 @@ public class AuthorEntity implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AuthorEntity that = (AuthorEntity) o;
-        return Objects.equals(uid, that.uid) &&
+        return Objects.equals(id, that.id) &&
                 Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(uid, name);
+        return Objects.hash(Long.valueOf(id), name);
     }
 
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("AuthorEntity{");
-        sb.append("uid='")
-          .append(uid)
+        sb.append("id='")
+          .append(id)
           .append('\'');
         sb.append(", name='")
           .append(name)
@@ -64,12 +89,14 @@ public class AuthorEntity implements Serializable {
     // =========================================================================
     // GETTERS & SETTERS
     // =========================================================================
-    public String getUid() {
-        return uid;
+
+
+    public Long getId() {
+        return id;
     }
 
-    public void setUid(String uid) {
-        this.uid = uid;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -79,4 +106,5 @@ public class AuthorEntity implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
+
 }

@@ -14,63 +14,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.crab.backend.rest.entities;
+package org.crab.backend.rest.entities.builders;
 
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Property;
-import org.neo4j.ogm.annotation.Relationship;
+import org.crab.backend.rest.entities.FiltersEntity;
+import org.crab.backend.rest.entities.SectionEntity;
 
-import java.util.List;
-@NodeEntity
-public class SectionEntity extends DocumentEntity  {
+public class SectionBuilder extends DocumentEntityBuiler<SectionEntity, SectionBuilder> {
 
 
     // =========================================================================
     // ATTRIBUTES
     // =========================================================================
-    private static final long serialVersionUID = 3280709182901047938L;
-
-    @Property
     private boolean       main;
-
-    @Relationship(type = "HAS_FILTER")
     private FiltersEntity filters;
 
 
     // =========================================================================
     // CONSTRUCTORS
     // =========================================================================
-    public SectionEntity() {
-    }
-
-    public SectionEntity(Long id,
-                         String type,
-                         String title,
-                         String description,
-                         List<TagEntity> tags,
-                         List<DocumentEntity> children,
-                         List<VersionEntity> versions,
-                         String image,
-                         List<AuthorEntity> authors,
-                         List<MetadataEntity> metadata,
-                         boolean main,
-                         FiltersEntity filters) {
-        super(id,
-                type,
-                title,
-                description,
-                tags,
-                children,
-                versions,
-                image,
-                authors,
-                metadata);
-        this.main = main;
-        this.filters = filters;
-    }
-
     @Override
-    public SectionEntity clone() {
+    public SectionEntity build() {
         return new SectionEntity(getId(),
                 getType(),
                 getTitle(),
@@ -85,19 +48,24 @@ public class SectionEntity extends DocumentEntity  {
                 cloneEntity(filters));
     }
 
-    // =========================================================================
-    // OVERRIDES
-    // =========================================================================
+    @Override
+    public SectionBuilder createBuild() {
+        return new SectionBuilder();
+    }
 
     @Override
-    protected void childrenToString(final StringBuilder builder) {
-        builder.append("main='")
-               .append(main)
-               .append("', ");
-        builder.append("filters='")
-               .append(filters)
-               .append("', ");
+    public void cloneSpecificsEntityElements(final SectionEntity entity,
+                                             final SectionBuilder builder) {
+
+        builder.setMain(entity.isMain());
+        builder.setFilters(cloneEntity(entity.getFilters()));
     }
+
+    @Override
+    protected SectionBuilder getBuilder() {
+        return this;
+    }
+
 
     // =========================================================================
     // GETTERS & SETTERS
@@ -106,15 +74,17 @@ public class SectionEntity extends DocumentEntity  {
         return main;
     }
 
-    public void setMain(boolean main) {
+    public SectionBuilder setMain(boolean main) {
         this.main = main;
+        return this;
     }
 
     public FiltersEntity getFilters() {
         return filters;
     }
 
-    public void setFilters(FiltersEntity filters) {
+    public SectionBuilder setFilters(FiltersEntity filters) {
         this.filters = filters;
+        return this;
     }
 }

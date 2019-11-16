@@ -16,23 +16,67 @@
  */
 package org.crab.backend.rest.entities;
 
+import org.neo4j.ogm.annotation.*;
+
 import java.io.Serializable;
 import java.util.Objects;
-
-public class VersionEntity implements Serializable {
+@NodeEntity
+public class VersionEntity implements Serializable, ClonableEntity<VersionEntity> {
 
     // =========================================================================
     // ATTRIBUTES
     // =========================================================================
     private static final long serialVersionUID = 8729248822690352966L;
 
-    private String         uid;
-    private long           created;
-    private long           version;
-    private String         comment;
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    @Property
+    private long created;
+
+    @Property
+    private long version;
+
+    @Property
+    private String comment;
+
+    @Property
     private boolean        published;
+
+    @Relationship(type = "HAS_DOCUMENT")
     private DocumentEntity document;
 
+    // =========================================================================
+    // CONSTRUCTORS
+    // =========================================================================
+    public VersionEntity() {
+
+    }
+
+    public VersionEntity(final Long id,
+                         final long created,
+                         final long version,
+                         final String comment,
+                         final boolean published,
+                         final DocumentEntity document) {
+        this.id = id;
+        this.created = created;
+        this.version = version;
+        this.comment = comment;
+        this.published = published;
+        this.document = document;
+    }
+
+    @Override
+    public VersionEntity clone() {
+        return new VersionEntity(id,
+                created,
+                version,
+                comment,
+                published,
+                cloneEntity(document));
+    }
     // =========================================================================
     // OVERRIDES
     // =========================================================================
@@ -42,19 +86,19 @@ public class VersionEntity implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         VersionEntity that = (VersionEntity) o;
-        return Objects.equals(uid, that.uid);
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(uid);
+        return Objects.hash(id);
     }
 
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("VersionEntity{");
-        sb.append("uid='")
-          .append(uid)
+        sb.append("id='")
+          .append(id)
           .append('\'');
         sb.append(", created=")
           .append(created);
@@ -74,12 +118,12 @@ public class VersionEntity implements Serializable {
     // =========================================================================
     // GETTERS & SETTERS
     // =========================================================================s
-    public String getUid() {
-        return uid;
+    public Long getUid() {
+        return id;
     }
 
     public void setUid(String uid) {
-        this.uid = uid;
+        this.id = id;
     }
 
     public long getCreated() {
@@ -121,4 +165,6 @@ public class VersionEntity implements Serializable {
     public void setDocument(DocumentEntity document) {
         this.document = document;
     }
+
+
 }

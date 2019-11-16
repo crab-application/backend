@@ -16,19 +16,42 @@
  */
 package org.crab.backend.rest.entities;
 
+import org.neo4j.ogm.annotation.GeneratedValue;
+import org.neo4j.ogm.annotation.Id;
+import org.neo4j.ogm.annotation.NodeEntity;
+import org.neo4j.ogm.annotation.Relationship;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
-
-public class FilterEntity implements Serializable {
+@NodeEntity
+public class FilterEntity implements Serializable,ClonableEntity<FilterEntity> {
     // =========================================================================
     // ATTRIBUTES
     // =========================================================================
     private static final long serialVersionUID = -6311078570262406323L;
+    @Id
+    @GeneratedValue
+    private Long          id;
 
-    private String          uid;
+    @Relationship(type = "HAS_TAGS")
     private List<TagEntity> tags;
 
+
+    // =========================================================================
+    // CONSTRUCTORS
+    // =========================================================================
+    public FilterEntity() {
+    }
+    public FilterEntity(final Long id,final List<TagEntity> tags) {
+        this.id = id;
+        this.tags = tags;
+    }
+
+    @Override
+    public FilterEntity clone() {
+        return new FilterEntity(id, cloneEntities(tags));
+    }
     // =========================================================================
     // OVERRIDES
     // =========================================================================
@@ -37,19 +60,19 @@ public class FilterEntity implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         FilterEntity that = (FilterEntity) o;
-        return Objects.equals(uid, that.uid);
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(uid);
+        return Objects.hash(id);
     }
 
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("FilterEntity{");
-        sb.append("uid='")
-          .append(uid)
+        sb.append("id='")
+          .append(id)
           .append('\'');
         sb.append(", tags=")
           .append(tags);
@@ -60,12 +83,12 @@ public class FilterEntity implements Serializable {
     // =========================================================================
     // GETTERS & SETTERS
     // =========================================================================
-    public String getUid() {
-        return uid;
+    public Long getId() {
+        return id;
     }
 
-    public void setUid(String uid) {
-        this.uid = uid;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public List<TagEntity> getTags() {
@@ -75,4 +98,6 @@ public class FilterEntity implements Serializable {
     public void setTags(List<TagEntity> tags) {
         this.tags = tags;
     }
+
+
 }

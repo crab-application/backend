@@ -16,19 +16,40 @@
  */
 package org.crab.backend.rest.entities;
 
+import org.neo4j.ogm.annotation.Id;
+import org.neo4j.ogm.annotation.NodeEntity;
+import org.neo4j.ogm.annotation.Property;
+
 import java.io.Serializable;
 import java.util.Objects;
-
-public class MetadataEntity implements Serializable {
+@NodeEntity
+public class MetadataEntity implements Serializable, ClonableEntity<MetadataEntity> {
 
 
     // =========================================================================
     // ATTRIBUTES
     // =========================================================================
     private static final long serialVersionUID = -1650257946353299519L;
-    private String uid;
+    @Id
     private String name;
+    @Property
     private String value;
+
+    // =========================================================================
+    // CONSTRUCTORS
+    // =========================================================================
+    public MetadataEntity() {
+    }
+
+    public MetadataEntity( final String name, final String value) {
+        this.name = name;
+        this.value = value;
+    }
+
+    @Override
+    public MetadataEntity clone() {
+        return new MetadataEntity(name, value);
+    }
 
     // =========================================================================
     // OVERRIDES
@@ -38,21 +59,17 @@ public class MetadataEntity implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MetadataEntity that = (MetadataEntity) o;
-        return Objects.equals(uid, that.uid) &&
-                Objects.equals(name, that.name);
+        return Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(uid, name);
+        return Objects.hash( name);
     }
 
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("MetadataEntity{");
-        sb.append("uid='")
-          .append(uid)
-          .append('\'');
         sb.append(", name='")
           .append(name)
           .append('\'');
@@ -66,14 +83,6 @@ public class MetadataEntity implements Serializable {
     // =========================================================================
     // GETTERS & SETTERS
     // =========================================================================
-    public String getUid() {
-        return uid;
-    }
-
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
-
     public String getName() {
         return name;
     }
@@ -89,4 +98,6 @@ public class MetadataEntity implements Serializable {
     public void setValue(String value) {
         this.value = value;
     }
+
+
 }

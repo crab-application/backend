@@ -16,11 +16,14 @@
  */
 package org.crab.backend.rest.controlers;
 
+import org.crab.backend.rest.entities.SectionEntity;
+import org.crab.backend.rest.entities.builders.SectionBuilder;
+import org.crab.backend.rest.services.sections.SectionsServices;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.websocket.server.PathParam;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,17 +33,42 @@ public class SectionControler {
     // =========================================================================
     // ATTRIBUTES
     // =========================================================================
+    @Autowired
+    private SectionsServices sectionsServices;
 
+
+    // =========================================================================
+    // CREATE
+    // =========================================================================
+    @RequestMapping(path = "/admin/sections", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<SectionEntity> createSections(@RequestBody  final List<SectionEntity> sections) throws Exception {
+        return  sectionsServices.create(sections);
+    }
+
+    @RequestMapping(path = "/admin/sections/{id}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<SectionEntity> createSections(@RequestBody  final List<SectionEntity> sections, @PathVariable("id") Long id) throws Exception {
+        return  sectionsServices.createChildren(Long.valueOf(id),sections);
+    }
 
     // =========================================================================
     // API
     // =========================================================================
-    @RequestMapping(path = "/sections", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<String> getSections() throws Exception {
 
 
 
-        return Arrays.asList("foo","bar");
+    @RequestMapping(path = "/admin/sections", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<SectionEntity> getSections() throws Exception {
+        return Arrays.asList(
+                new SectionBuilder().setTitle("foobar")
+                                    .setDescription("lorem ipsum")
+                                    .setMain(true)
+                                    .build(),
+
+                new SectionBuilder().setTitle("joe")
+                                    .setDescription("lorem ipsum")
+                                    .setMain(true)
+                                    .build()
+                );
     }
 
 }

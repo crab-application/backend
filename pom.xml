@@ -24,7 +24,7 @@
         <super.jdk>13</super.jdk>
         <super.jdk.arg>-parameters</super.jdk.arg>
         <!--[ io ]+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-        <io.swagger.version>2.9.2</io.swagger.version>
+        <io.swagger.version>2.10.0</io.swagger.version>
 
         <!--[ org.maven ]++++++++++++++++++++++++++++++++++++++++++++++++++++-->
         <plugins.org-apache-maven-plugins.maven-compiler-plugin>3.1</plugins.org-apache-maven-plugins.maven-compiler-plugin>
